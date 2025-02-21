@@ -8,6 +8,34 @@ import re
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
+# --- Authentication Setup ---
+USERNAME = "prince papa"  # Change this to your preferred username
+PASSWORD = "hain mere"  # Change this to your preferred password
+
+def login():
+    st.title("🔐 Secure Login")
+    st.subheader("Please enter your credentials to access the site.")
+
+    username = st.text_input("👤 Username")
+    password = st.text_input("🔑 Password", type="password")
+
+    if st.button("Login"):
+        if username == USERNAME and password == PASSWORD:
+            st.session_state["authenticated"] = True
+            st.success("✅ Login Successful! Redirecting...")
+            st.experimental_rerun()
+        else:
+            st.error("❌ Incorrect username or password")
+
+# Check authentication status
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    login()
+    st.stop()  # Prevents further execution until logged in
+
+# --- Main Application ---
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 CREDS = Credentials.from_service_account_info(st.secrets["GOOGLE_APPLICATION_CREDENTIALS"], scopes=SCOPE)
 client = gspread.authorize(CREDS)
