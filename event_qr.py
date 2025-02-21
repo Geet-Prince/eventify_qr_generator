@@ -5,25 +5,27 @@ import pandas as pd
 import qrcode
 import random
 import re
+import json
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-# Google Sheets API Setup
+# Google Sheets API Setup (Using Streamlit Secrets)
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-CREDS = Credentials.from_service_account_file("your-service-account.json", scopes=SCOPE)
+service_account_info = json.loads(st.secrets["GOOGLE_APPLICATION_CREDENTIALS"])
+CREDS = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
 client = gspread.authorize(CREDS)
 
-# Open Google Sheet (Replace with your Sheet Name & Sheet ID)
-SHEET_ID = "1I8z27cmHXUB48B6J52_p56elELf2tQVv_K-ra6jf1iQ"
+# Open Google Sheet
+SHEET_ID = "1I8z27cmHXUB48B6J52_p56elELf2tQVv_K-ra6jf1iQ"  # Change this to your actual Sheet ID
 SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
 # Streamlit UI
-st.title("Event Registration with QR Code")
+st.title("📢 Event Registration with QR Code")
 
 # User Input
 name = st.text_input("Enter Your Name")
-mobile = st.text_input("Enter Your Mobile Number", max_chars=10)  # Limit input to 10 characters
+mobile = st.text_input("Enter Your Mobile Number", max_chars=10)  # Limit to 10 digits
 
 # Function to Generate QR Code with Unique ID Text
 def generate_qr_with_text(data, unique_id):
@@ -75,18 +77,18 @@ def validate_mobile_number(mobile):
 # Store Data in Google Sheet and Generate QR Code
 if st.button("Register"):
     if not name:
-        st.error("Please enter your name.")
+        st.error("❌ Please enter your name.")
     elif not mobile:
-        st.error("Please enter your mobile number.")
+        st.error("❌ Please enter your mobile number.")
     elif not validate_mobile_number(mobile):
-        st.error("Please enter a valid 10-digit mobile number.")
+        st.error("❌ Please enter a valid 10-digit mobile number.")
     else:
         # Generate a unique ID for the user
         unique_id = generate_unique_id(name)
 
         # Append Data to Google Sheet
         sheet.append_row([unique_id, name, mobile])
-        st.success("Successfully Registered!")
+        st.success("✅ Successfully Registered!")
 
         # Generate QR Code with unique ID text
         user_data = f"Name: {name}\nMobile: {mobile}\nID: {unique_id}"
@@ -97,7 +99,7 @@ if st.button("Register"):
 
         # Provide a download link for the QR code image
         st.download_button(
-            label="Download QR Code",
+            label="📥 Download QR Code",
             data=qr_img_with_text,
             file_name=f"{name}_qr_code.png",
             mime="image/png"
