@@ -8,24 +8,19 @@ import re
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-# Google Sheets API Setup (Using Streamlit Secrets)
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 CREDS = Credentials.from_service_account_info(st.secrets["GOOGLE_APPLICATION_CREDENTIALS"], scopes=SCOPE)
 client = gspread.authorize(CREDS)
 
-# Open Google Sheet
 SHEET_ID = "1I8z27cmHXUB48B6J52_p56elELf2tQVv_K-ra6jf1iQ"  # Replace with your actual Sheet ID
 SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
-# Streamlit UI
 st.title("Meloraga")
 
-# User Input
 name = st.text_input("Enter Your Name")
 mobile = st.text_input("Enter Your Mobile Number", max_chars=10)  # Limit to 10 digits
 
-# Function to Generate QR Code with Unique ID Text
 def generate_qr_with_text(data, unique_id):
     qr = qrcode.make(data)
     qr_img = qr.convert("RGB")
@@ -51,15 +46,12 @@ def generate_qr_with_text(data, unique_id):
     
     return img_io
 
-# Function to generate a unique ID
 def generate_unique_id(name):
     return f"{random.randint(1000, 9999)}-{name}"
 
-# Function to validate mobile number
 def validate_mobile_number(mobile):
     return bool(re.match(r'^[0-9]{10}$', mobile))
 
-# Handle Form Submission
 if st.button("Register"):
     if not name:
         st.error("❌ Please enter your name.")
