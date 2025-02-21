@@ -19,7 +19,7 @@ SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
 # Streamlit UI
-st.title("📢 Event Registration with QR Code")
+st.title("Meloraga")
 
 # User Input
 name = st.text_input("Enter Your Name")
