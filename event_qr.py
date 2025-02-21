@@ -9,8 +9,8 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
 # --- Authentication Setup ---
-USERNAME = "admin"  # Change this to your preferred username
-PASSWORD = "password123"  # Change this to your preferred password
+USERNAME = "prince papa"  # Change this to your preferred username
+PASSWORD = "hain mere"  # Change this to your preferred password
 
 def login():
     """Displays the login form."""
