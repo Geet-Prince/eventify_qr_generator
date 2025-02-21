@@ -13,6 +13,7 @@ USERNAME = "prince papa"  # Change this to your preferred username
 PASSWORD = "hain mere"  # Change this to your preferred password
 
 def login():
+    """Displays the login form."""
     st.title("🔐 Secure Login")
     st.subheader("Please enter your credentials to access the site.")
 
@@ -21,21 +22,21 @@ def login():
 
     if st.button("Login"):
         if username == USERNAME and password == PASSWORD:
-            st.session_state["authenticated"] = True
+            st.session_state.authenticated = True
             st.success("✅ Login Successful! Redirecting...")
-            st.experimental_rerun()
         else:
             st.error("❌ Incorrect username or password")
 
-# Check authentication status
+# Initialize authentication state
 if "authenticated" not in st.session_state:
-    st.session_state["authenticated"] = False
+    st.session_state.authenticated = False
 
-if not st.session_state["authenticated"]:
+# Show login page if not authenticated
+if not st.session_state.authenticated:
     login()
     st.stop()  # Prevents further execution until logged in
 
-# --- Main Application ---
+# --- Main App (Only accessible after login) ---
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 CREDS = Credentials.from_service_account_info(st.secrets["GOOGLE_APPLICATION_CREDENTIALS"], scopes=SCOPE)
 client = gspread.authorize(CREDS)
@@ -97,3 +98,8 @@ if st.button("Register"):
 
         st.image(qr_img_with_text, caption=f"QR Code for {name}")
         st.download_button("📥 Download QR Code", data=qr_img_with_text, file_name=f"{name}_qr_code.png", mime="image/png")
+
+# Logout Button
+if st.button("Logout"):
+    st.session_state.authenticated = False
+    st.rerun()
