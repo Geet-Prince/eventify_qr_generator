@@ -19,7 +19,7 @@ SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
 # Streamlit UI
-st.title("Meloraga")
+st.title("kittu")
 
 # User Input
 name = st.text_input("Enter Your Name")
