@@ -9,8 +9,8 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
 # --- Authentication Setup ---
-USERNAME = "prince papa"  # Change this to your preferred username
-PASSWORD = "hain mere"  # Change this to your preferred password
+USERNAME = "admin"  # Change this to your preferred username
+PASSWORD = "password123"  # Change this to your preferred password
 
 def login():
     """Displays the login form."""
@@ -24,6 +24,7 @@ def login():
         if username == USERNAME and password == PASSWORD:
             st.session_state.authenticated = True
             st.success("✅ Login Successful! Redirecting...")
+            st.experimental_rerun()  # Force the page to refresh
         else:
             st.error("❌ Incorrect username or password")
 
@@ -36,7 +37,9 @@ if not st.session_state.authenticated:
     login()
     st.stop()  # Prevents further execution until logged in
 
-# --- Main App (Only accessible after login) ---
+# --- Main Registration Page (Only accessible after login) ---
+st.title("Meloraga Registration")
+
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 CREDS = Credentials.from_service_account_info(st.secrets["GOOGLE_APPLICATION_CREDENTIALS"], scopes=SCOPE)
 client = gspread.authorize(CREDS)
@@ -44,8 +47,6 @@ client = gspread.authorize(CREDS)
 SHEET_ID = "1I8z27cmHXUB48B6J52_p56elELf2tQVv_K-ra6jf1iQ"  # Replace with your actual Sheet ID
 SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
-
-st.title("Meloraga")
 
 name = st.text_input("Enter Your Name")
 mobile = st.text_input("Enter Your Mobile Number", max_chars=10)  # Limit to 10 digits
