@@ -45,7 +45,7 @@ if not st.session_state.authenticated:
     st.stop()  # Prevents further execution until logged in
 
 # --- Main Registration Page (Only accessible after login) ---
-st.title("Meloraga Registration")
+st.title("Event Registration")
 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 CREDS = Credentials.from_service_account_info(st.secrets["GOOGLE_APPLICATION_CREDENTIALS"], scopes=SCOPE)
