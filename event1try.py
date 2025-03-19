@@ -7,6 +7,11 @@ import random
 import re
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 # --- Main Registration Page ---
 st.title("Event Registration")
@@ -19,9 +24,15 @@ SHEET_ID = "1I8z27cmHXUB48B6J52_p56elELf2tQVv_K-ra6jf1iQ"
 SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
+# Email Credentials
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+EMAIL_ADDRESS = st.secrets["itsyoboyprince07@gmail.com"]
+EMAIL_PASSWORD = st.secrets["kibf dwes tzkx imrr"]
+
 # Input Fields
 name = st.text_input("Enter Your Name")
-email = st.text_input("Enter Your Email")  # Added Email Field
+email = st.text_input("Enter Your Email")
 mobile = st.text_input("Enter Your Mobile Number", max_chars=10)
 
 def generate_qr_with_text(data, unique_id):
@@ -58,6 +69,30 @@ def validate_mobile_number(mobile):
 def validate_email(email):
     return bool(re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email))
 
+def send_email(to_email, subject, body, attachment):
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = to_email
+        msg['Subject'] = subject
+
+        msg.attach(MIMEText(body, 'plain'))
+
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(attachment.getvalue())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f'attachment; filename=qr_code.png')
+        msg.attach(part)
+
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
+        return True
+    except Exception as e:
+        st.error(f"❌ Error sending email: {e}")
+        return False
+
 if st.button("Register"):
     if not name:
         st.error("❌ Please enter your name.")
@@ -71,8 +106,6 @@ if st.button("Register"):
         st.error("❌ Please enter a valid 10-digit mobile number.")
     else:
         unique_id = generate_unique_id(name)
-        
-        # Append data including Email to the Google Sheet
         sheet.append_row([unique_id, name, mobile, email])
         st.success("✅ Successfully Registered!")
 
@@ -81,3 +114,10 @@ if st.button("Register"):
 
         st.image(qr_img_with_text, caption=f"QR Code for {name}")
         st.download_button("📥 Download QR Code", data=qr_img_with_text, file_name=f"{name}_qr_code.png", mime="image/png")
+
+        # Send Email with QR Code
+        subject = "Your Event QR Code"
+        body = f"Hello {name},\n\nThank you for registering. Your event QR code is attached.\n\nBest Regards,\nEvent Team"
+
+        if send_email(email, subject, body, qr_img_with_text):
+            st.success("📧 QR Code sent to your email!")
