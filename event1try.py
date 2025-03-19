@@ -8,43 +8,6 @@ import re
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-USERNAME = "123"  
-PASSWORD = "123"  
-
-def login():
-    """Displays the login form."""
-    st.title("🔐 Secure Login")
-    st.subheader("Please enter your credentials to access the site.")
-
-    username = st.text_input("👤 Username")
-    password = st.text_input("🔑 Password", type="password")
-
-    if st.button("Login"):
-        if username == USERNAME and password == PASSWORD:
-            st.session_state.authenticated = True
-            st.session_state.first_load = True
-            st.rerun()
-        else:
-            st.error("❌ Incorrect username or password")
-
-# Initialize authentication state
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if "first_load" not in st.session_state:
-    st.session_state.first_load = False
-
-# Redirect only once after login
-if st.session_state.authenticated and st.session_state.first_load:
-    st.session_state.first_load = False
-    st.rerun()
-
-# Show login page if not authenticated
-if not st.session_state.authenticated:
-    login()
-    st.stop()
-
-# --- Main Registration Page (Only accessible after login) ---
 st.title("Event Registration")
 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -114,8 +77,3 @@ if st.button("Register"):
 
         st.image(qr_img_with_text, caption=f"QR Code for {name}")
         st.download_button("📥 Download QR Code", data=qr_img_with_text, file_name=f"{name}_qr_code.png", mime="image/png")
-
-# Logout Button
-if st.button("Logout"):
-    st.session_state.authenticated = False
-    st.rerun()
