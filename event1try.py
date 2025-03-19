@@ -13,7 +13,6 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-# --- Main Registration Page ---
 st.title("Event Registration")
 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -24,14 +23,11 @@ SHEET_ID = "1I8z27cmHXUB48B6J52_p56elELf2tQVv_K-ra6jf1iQ"
 SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
-# Email Credentials
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL_ADDRESS = st.secrets["email_address"]
 EMAIL_PASSWORD = st.secrets["email_password"]
 
-
-# Input Fields
 name = st.text_input("Enter Your Name")
 email = st.text_input("Enter Your Email")
 mobile = st.text_input("Enter Your Mobile Number", max_chars=10)
