@@ -114,7 +114,7 @@ if st.button("Register"):
 
         # Send Email with QR Code
         subject = "Your Event QR Code"
-        body = f"Hello {name},\n\nThank you for registering. Your event QR code is attached.\n\nBest Regards,\nEvent Team"
+        body = f"Hello {name},\n\nThank you for registering. Your event QR code is attached.\n\nBest Regards,\nPrince"
 
         if send_email(email, subject, body, qr_img_with_text):
             st.success("📧 QR Code sent to your email!")
