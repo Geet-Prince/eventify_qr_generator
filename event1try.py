@@ -8,6 +8,7 @@ import re
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
+# --- Main Registration Page ---
 st.title("Event Registration")
 
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -18,8 +19,9 @@ SHEET_ID = "1I8z27cmHXUB48B6J52_p56elELf2tQVv_K-ra6jf1iQ"
 SHEET_NAME = "Attendees"
 sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
+# Input Fields
 name = st.text_input("Enter Your Name")
-email = st.text_input("Enter Your Email")
+email = st.text_input("Enter Your Email")  # Added Email Field
 mobile = st.text_input("Enter Your Mobile Number", max_chars=10)
 
 def generate_qr_with_text(data, unique_id):
@@ -69,7 +71,9 @@ if st.button("Register"):
         st.error("❌ Please enter a valid 10-digit mobile number.")
     else:
         unique_id = generate_unique_id(name)
-        sheet.append_row([unique_id, name, mobile, email, "❌" ])
+        
+        # Append data including Email to the Google Sheet
+        sheet.append_row([unique_id, name, mobile, email])
         st.success("✅ Successfully Registered!")
 
         user_data = f"Name: {name}\nEmail: {email}\nMobile: {mobile}\nID: {unique_id}"
