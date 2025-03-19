@@ -28,8 +28,10 @@ SMTP_PORT = 587
 EMAIL_ADDRESS = st.secrets["email_address"]
 EMAIL_PASSWORD = st.secrets["email_password"]
 
+# Input Fields
 name = st.text_input("Enter Your Name")
 email = st.text_input("Enter Your Email")
+confirm_email = st.text_input("Confirm Your Email")
 mobile = st.text_input("Enter Your Mobile Number", max_chars=10)
 
 def generate_qr_with_text(data, unique_id):
@@ -78,7 +80,7 @@ def send_email(to_email, subject, body, attachment):
         part = MIMEBase('application', 'octet-stream')
         part.set_payload(attachment.getvalue())
         encoders.encode_base64(part)
-        part.add_header('Content-Disposition', f'attachment; filename=qr_code.png')
+        part.add_header('Content-Disposition', 'attachment; filename=qr_code.png')
         msg.attach(part)
 
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
@@ -93,10 +95,12 @@ def send_email(to_email, subject, body, attachment):
 if st.button("Register"):
     if not name:
         st.error("❌ Please enter your name.")
-    elif not email:
-        st.error("❌ Please enter your email.")
-    elif not validate_email(email):
-        st.error("❌ Please enter a valid email address.")
+    elif not email or not confirm_email:
+        st.error("❌ Please enter and confirm your email.")
+    elif not validate_email(email) or not validate_email(confirm_email):
+        st.error("❌ Please enter valid email addresses.")
+    elif email != confirm_email:
+        st.error("❌ Email addresses do not match. Please try again.")
     elif not mobile:
         st.error("❌ Please enter your mobile number.")
     elif not validate_mobile_number(mobile):
@@ -117,5 +121,4 @@ if st.button("Register"):
         body = f"Hello {name},\n\nThank you for registering. Your event QR code is attached.\n\nBest Regards,\nPrince"
 
         if send_email(email, subject, body, qr_img_with_text):
-          st.success("📧 Your QR Code has been successfully sent to your email address! If you don’t see it in your inbox within a few minutes, please check your Spam or Junk folder. Mark it as 'Not Spam' to ensure future emails land in your inbox.")
-
+            st.success("📧 Your QR Code has been successfully sent to your email address! If you don’t see it in your inbox within a few minutes, please check your Spam or Junk folder. Mark it as 'Not Spam' to ensure future emails land in your inbox.")
