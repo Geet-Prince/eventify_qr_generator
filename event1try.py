@@ -106,7 +106,7 @@ if st.button("Register"):
         st.error("❌ Please enter a valid 10-digit mobile number.")
     else:
         unique_id = generate_unique_id(name)
-        sheet.append_row([unique_id, name, mobile, email, ""])
+        sheet.append_row([unique_id, name, mobile, email, "❌"])
         st.success("✅ Successfully Registered!")
 
         user_data = f"Name: {name}\nEmail: {email}\nMobile: {mobile}\nID: {unique_id}"
