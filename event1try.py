@@ -27,8 +27,9 @@ sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 # Email Credentials
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_ADDRESS = st.secrets["itsyoboyprince07@gmail.com"]
-EMAIL_PASSWORD = st.secrets["kibf dwes tzkx imrr"]
+EMAIL_ADDRESS = st.secrets["email_address"]
+EMAIL_PASSWORD = st.secrets["email_password"]
+
 
 # Input Fields
 name = st.text_input("Enter Your Name")
